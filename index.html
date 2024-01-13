@@ -16,20 +16,36 @@
         
         .search {
             position: absolute;
+            
+            
             color: #fff;
-            top: 10px;
+            bottom: 10px;
             left: 10px;
+            margin-left: 2rem;
             z-index: 1;
+        }
+        input {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 5px;
+            border: none;
+            outline: none;
         }
 
     </style>
 </head>
 <body>
-    <h1 class="search">3D Image Wall</h1>
+    <div class="search">
+        <h1 >3D Image Wall</h1>
+        <form id="searchForm">
+            <input type="text" name="search" id="search" placeholder="Search for images">
+        </form>
+    </div>
     <div class="canvas">
         <div id="container"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/20.0.0/tween.umd.js"></script>
     <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/search.js"></script>
 </body>
 </html>

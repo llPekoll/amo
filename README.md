@@ -1,38 +1,46 @@
-# create-svelte
+# Amo Test
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+### Technologies
 
-## Creating a project
+**Vite**: Used for serving with hot reload.
+**Three.js**: Employed for building the interface.
+**tween.js**: Used for object animation.
 
-If you're seeing this, you've probably already done this step. Congrats!
+I opted for Three.js over using just CSS, as I found it to be more versatile. I didn't utilize frontend frameworks like React or Svelte since all the crucial functionalities were centered around Three.js.
+
+### Installation
+Clone the project:
 
 ```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
+git clone https://github.com/llPekoll/amo
 ```
+Install dependencies:
 
-## Developing
+```bash
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+npm install
+```
+Duplicate the .env.exemple rename it .env and insert your Bing API key:
+
+```bash
+
+VITE_BING_KEY=<YOUR_BING_KEY>
+```
+Launch the development server:
 
 ```bash
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
+### App Usage
+Scroll functionality is available to navigate both upward and downward.
+Hovering over an image will focus on it, bringing it to the forefront.
+Press the '**[esc]**' key to return to the normal view.
 
-## Building
 
-To create a production version of your app:
+### Structure
+Simple code we do have 1 html file and a js file
 
-```bash
-npm run build
-```
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+### What can be improuved
+I think the way of presenting the focus image can be improuved in varrious way, using tweak or really change the way to put the image upfront, many in another scene, some ereasearch need to be done on that regard.
+I chose to use
