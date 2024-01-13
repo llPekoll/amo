@@ -8,16 +8,8 @@ import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
 
 
 let selectedObjects = [];
-
-const params = {
-    edgeStrength: 3.0,
-    edgeGlow: 0.0,
-    edgeThickness: 1.0,
-    pulsePeriod: 0,
-    rotate: false,
-    usePatternTexture: false
-};
-
+let INTERSECTED;
+const pointer = new THREE.Vector2();
 
 var scene = new THREE.Scene();
 var raycaster = new THREE.Raycaster();
@@ -64,7 +56,7 @@ document.getElementById('container').appendChild(renderer.domElement);
 
 // MESH
 var aspectRatio = window.innerWidth / window.innerHeight;
-// var texture = new THREE.TextureLoader().load('path_to_your_images/' + i + '.jpg');
+
 var gap = 0.2;
 for (var i = 0; i < 4; i++) {
     for (var j = 0; j < 10; j++) {
@@ -81,6 +73,8 @@ for (var i = 0; i < 4; i++) {
 
     }
 }
+
+
 // MOUSE
 var scrollSpeed = 0;
 window.addEventListener('wheel', function(event) {
@@ -89,28 +83,67 @@ window.addEventListener('wheel', function(event) {
 
 
 document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+
+
 function onDocumentMouseMove(event) {
 
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    raycaster.setFromCamera(mouse, camera);
+    
+    raycaster.setFromCamera( mouse, camera );
 
-    var intersects = raycaster.intersectObjects(planes);
-    if (intersects.length) {
-        centerOfInterest = intersects[0].object;
-        intersects[0].object.scale.set(1.3, 1.3, 1.3);
-        intersects[0].object.material.color.set(0xff0000);
-        addSelectedObject( centerOfInterest );
-        outlinePass.selectedObjects = selectedObjects;
+    var intersects = raycaster.intersectObjects(planes, false );
+    if (intersects.length>0) {
+        if ( INTERSECTED != intersects[ 0 ].object ) {
+            INTERSECTED = intersects[ 0 ].object;
+            console.log("contact");
+            centerOfInterest = intersects[0].object;
+            scalePlane(centerOfInterest);
+            addSelectedObject( centerOfInterest );
+            outlinePass.selectedObjects = selectedObjects;
+        }
+        
+    } else {
+        // no meed to clean Intersected
     }
+    for (var i = 0; i < planes.length; i++) {
+        if (planes[i] != centerOfInterest){
+
+            resetPlane(planes[i]); 
+        }
+    }
+}
+
+function scalePlane(plane) {
+    var scaleTween = new TWEEN.Tween(plane.scale)
+        .to({ x: 1.3, y: 1.3 }, 300)
+        .onComplete(function() {
+            scaleTween.stop();
+        });
+    var colorTween = new TWEEN.Tween(plane.material.color)
+        .to({ r: 1, g: 0, b: 0 }, 300)
+        .onComplete(function() {
+            colorTween.stop();
+        });
+    scaleTween.start();
+    colorTween.start();
 }
 
 function resetPlane(plane) {
     var scaleTween = new TWEEN.Tween(plane.scale)
-        .to({ x: 1, y: 1 }, 300);
+        .to({ x: 1, y: 1 }, 300)
+        .onComplete(function() {
+            scaleTween.stop();
+            plane.scale.set(1, 1, 1);
+        });
 
     var colorTween = new TWEEN.Tween(plane.material.color)
-        .to({ r: 1, g: 1, b: 1 }, 300);
+        .to({ r: 1, g: 1, b: 1 }, 300) 
+        .onComplete(function() {
+            colorTween.stop();
+            plane.material.color.set(0xffffff);
+        });
 
     scaleTween.start();
     colorTween.start();
@@ -131,12 +164,7 @@ function animate() {
         camera.lookAt(new THREE.Vector3(currentLookAt.x, currentLookAt.y, currentLookAt.z));
     })
     .start();
-    console.log(centerOfInterest.scale)
     composer.render();
-    for (var i = 0; i < planes.length; i++) {
-        if (planes[i].scale.x > 1) {
-            resetPlane(planes[i]); 
-        }
-    }
+   
 }
 animate();
