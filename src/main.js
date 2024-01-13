@@ -58,9 +58,9 @@ document.getElementById('container').appendChild(renderer.domElement);
 var aspectRatio = window.innerWidth / window.innerHeight;
 
 var gap = 0.2;
-for (var i = 0; i < 4; i++) {
-    for (var j = 0; j < 10; j++) {
-        var texture = new THREE.TextureLoader().load(`https://placehold.co/400x400?text=Hello+World${i}_${j}`);
+for (var j = 0; j < 10; j++) {
+    for (var i = 0; i < 4; i++) {
+        var texture = new THREE.TextureLoader().load(`https://placehold.co/400x400?text=${i}_${j}`);
         var geometry = new THREE.PlaneGeometry(1, 1);
         var material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff});
         var plane = new THREE.Mesh(geometry, material);
@@ -107,12 +107,7 @@ function onDocumentMouseMove(event) {
     } else {
         // no meed to clean Intersected
     }
-    for (var i = 0; i < planes.length; i++) {
-        if (planes[i] != centerOfInterest){
-
-            resetPlane(planes[i]); 
-        }
-    }
+   
 }
 
 function scalePlane(plane) {
@@ -151,6 +146,35 @@ function resetPlane(plane) {
 
 
 
+// Keyboard
+
+var currentRow = 0;
+var currentColumn = 0;
+let numColumns = 4;
+
+window.addEventListener('keydown', function(event) {
+    switch (event.key) {
+        case 'ArrowUp':
+            currentRow = Math.max(currentRow - 1, 0); 
+            break;
+        case 'ArrowDown':
+            currentRow = Math.min(currentRow + 1, 9); 
+            break;
+        case 'ArrowLeft':
+            currentColumn = Math.max(currentColumn - 1, 0); 
+            break;
+        case 'ArrowRight':
+            currentColumn = Math.min(currentColumn + 1, 3); 
+            break;
+    }
+
+    centerOfInterest = planes[currentRow * numColumns + currentColumn];
+
+    scalePlane(centerOfInterest);
+    addSelectedObject(centerOfInterest);
+    outlinePass.selectedObjects = selectedObjects;
+});
+
 // Render loop
 function animate() {
     requestAnimationFrame(animate);
@@ -165,6 +189,13 @@ function animate() {
     })
     .start();
     composer.render();
+
+    for (var i = 0; i < planes.length; i++) {
+        if (planes[i] != centerOfInterest){
+
+            resetPlane(planes[i]); 
+        }
+    }
    
 }
 animate();
