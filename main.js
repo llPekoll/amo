@@ -5,7 +5,8 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHei
 var renderer = new THREE.WebGLRenderer();
 
 var planes = [];
-var centerOfInterest = new THREE.Vector3(0, 0, 0);
+var centerOfInterest;
+var currentLookAt = { x: 0, y: 0, z: 0 };
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('container').appendChild(renderer.domElement);
@@ -31,7 +32,7 @@ for (var i = 0; i < 50; i++) {
     plane.position.set((i % 10)*1.5 - 5, Math.floor(i / 10)*1.5 - 2, -5);
     scene.add(plane);
     planes.push(plane);
-    centerOfInterest = planes[0].position;
+    centerOfInterest = planes[0];
 }
 
 // MOUSE
@@ -50,29 +51,48 @@ function onDocumentMouseMove(event) {
     raycaster.setFromCamera(mouse, camera);
 
     var intersects = raycaster.intersectObjects(planes);
-    console.log({intersects});
-    centerOfInterest = intersects[0].object.position;
     if (intersects.length) {
+        centerOfInterest = intersects[0].object;
         intersects[0].object.scale.set(1.3, 1.3, 1.3);
+        intersects[0].object.material.color.set(0xff0000);
     }
 }
+
+function resetPlane(plane) {
+    var scaleTween = new TWEEN.Tween(plane.scale)
+        .to({ x: 1, y: 1, z: 1 }, 300); // animate to scale 1 over 500ms
+
+    var colorTween = new TWEEN.Tween(plane.material.color)
+        .to({ r: 1, g: 1, b: 1 }, 300); // animate to white color over 500ms
+
+    // Start the tweens
+    scaleTween.start();
+    colorTween.start();
+}
+
+
 
 // Render loop
 function animate() {
     requestAnimationFrame(animate);
-    console.log(mouseX, mouseY);
+    TWEEN.update();
+    // console.log(mouseX, mouseY);
     camera.position.x += (mouseX - camera.position.x) * 0.05;
     camera.position.y += (-mouseY - camera.position.y) * 0.05;
-    console.log("camera.position.x, camera.position.y");
-    console.log(camera.position.x, camera.position.y);
 
-    console.log("camera.position");
-    console.log(camera.position);    
-    camera.lookAt(centerOfInterest);
+
+    var lookAtTween = new TWEEN.Tween(currentLookAt)
+    .to(centerOfInterest.position, 1000)
+    .onUpdate(function() {
+        camera.lookAt(new THREE.Vector3(currentLookAt.x, currentLookAt.y, currentLookAt.z));
+    })
+    .start();
+
+    // camera.lookAt(centerOfInterest.position);
     renderer.render(scene, camera);
     for (var i = 0; i < planes.length; i++) {
         if (planes[i].scale.x > 1) {
-            planes[i].scale.set(1, 1, 1);
+            resetPlane(planes[i]); 
         }
     }
 }

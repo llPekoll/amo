@@ -3,13 +3,32 @@
 <head>
     <title>3D Image Wall</title>
     <style>
-        body { margin: 0; }
-        canvas { display: block; }
+        body { 
+            margin: 0; 
+            position: relative; /* Add this line */
+        }
+        
+        canvas { 
+            display: block; 
+        }
+        
+        .search {
+            position: absolute;
+            color: #fff;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+        }
+
     </style>
 </head>
 <body>
-    <div id="container"></div>
+    <h1 class="search">3D Image Wall</h1>
+    <div class="canvas">
+        <div id="container"></div>
+    </div>
     <script src="https://threejs.org/build/three.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/20.0.0/tween.umd.js"></script>
     <script src="main.js"></script>
 </body>
 </html>
