@@ -34,6 +34,9 @@ I opted for Three.js over using just CSS, finding it more versatile. Frontend fr
     npm run dev
     ```
 
+5. type [Localhost:3000](http://localhost:3000/) in your browser
+
+
 ## App Usage
 
 - Scroll functionality is available to navigate both upward and downward.
@@ -55,7 +58,8 @@ In the `src` folder:
 I believe the presentation of the focused image can be improved over time. Some potential enhancements include:
 
 - Finding a correct way to display only fetchable images.
-- Tweaking the camera, image animations and the layout for row and column for responsivness.
+- Tweaking the camera, image animations.
+- layout for row and column to better fit the screen for every size.
 - Consider splitting `main.ts` further (e.g., separating `drawWall` and event listeners into distinct files).
 
 This is what I could achieve within the 8-hour timeframe.
