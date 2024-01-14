@@ -14,7 +14,7 @@ function animatePlane(plane) {
         });
 
     const colorTween = new TWEEN.Tween(plane.material.color)
-        .to({ r: 1, g: 0, b: 0 }, 300)
+        .to({ r: 1, g: 0.9, b: 0.9 }, 300)
         .onComplete(function() {
             colorTween.stop();
         });

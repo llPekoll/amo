@@ -24,6 +24,7 @@ let currentColumn = 0;
 
 let aspectRatio = window.innerWidth / window.innerHeight;
 
+
 function drawWall(images) {
     // Set basic setup for positioning the planes
     let gap = 0.2;
@@ -45,9 +46,16 @@ function drawWall(images) {
     }
     for (let j = 0; j < numRows; j++) {
         for (let i = 0; i < numColumns; i++) {
-            let texture;
+            let texture:THREE.Texture;
             if (images.length > 0) {
-                texture = new THREE.TextureLoader().load(images[j * numColumns + i].contentUrl);
+                texture = new THREE.TextureLoader().load(
+                    images[j * numColumns + i].contentUrl,
+                    undefined,
+                    undefined,
+                    function(error) {
+                        console.log(`couldn't load image${error}`);
+                        texture = new THREE.TextureLoader().load(`https://placehold.co/400x400?text=fail`);
+                    });
             } else {
                 texture = new THREE.TextureLoader().load(`https://placehold.co/400x400?text=amo`);
             }
@@ -114,12 +122,15 @@ document.getElementById('searchForm')!.addEventListener('submit', function(event
 
     fetch('https://api.bing.microsoft.com/v7.0/images/search?q=' + encodeURIComponent(query), {
         headers: {
-            // 'Ocp-Apim-Subscription-Key': import.meta.env.VITE_BING_KEY
+            'Ocp-Apim-Subscription-Key': import.meta.env.VITE_BING_KEY
         }
     })
     .then(response => response.json())
     .then(data => {
         const images = data.value;
+
+        console.log(data);
+        console.log(images);
         drawWall(images);
         console.log(data.value);
     })
@@ -196,14 +207,14 @@ function animate() {
     scrollSpeed = 0;
 
     let lookAtTween = new TWEEN.Tween(currentLookAt)
-    .to(centerOfInterest.position, 800)
+    .to(centerOfInterest!.position, 800)
     .onUpdate(function() {
         camera.lookAt(new THREE.Vector3(currentLookAt.x, currentLookAt.y, currentLookAt.z));
     })
     .start();
     composer.render();
 
-    centerOfInterest.lookAt(camera.position);
+    centerOfInterest!.lookAt(camera.position);
 
     for (let i = 0; i < planes.length; i++) {
         if (planes[i] != centerOfInterest){
