@@ -57,7 +57,7 @@ function drawWall(images) {
                         texture = new THREE.TextureLoader().load(`https://placehold.co/400x400?text=fail`);
                     });
             } else {
-                texture = new THREE.TextureLoader().load(`https://placehold.co/400x400?text=amo`);
+                texture = new THREE.TextureLoader().load(`https://placehold.co/400x400?text=Cooliris`);
             }
             let geometry = new THREE.PlaneGeometry(1, 1);
             let material = new THREE.MeshBasicMaterial({ map: texture, color: 0xffffff});
